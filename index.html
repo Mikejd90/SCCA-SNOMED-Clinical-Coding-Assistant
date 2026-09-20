@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SCCA 2.3 — Clinical Coding & Terminology Assistant</title>
+<style>
+:root{--navy:#12304a;--blue:#1769aa;--pale:#eaf4fb;--green:#167c61;--greenp:#eaf8f3;--amber:#a76500;--amberp:#fff6e5;--purple:#6941c6;--purpp:#f3efff;--ink:#172b3a;--muted:#65788a;--line:#d9e2ea;--bg:#f4f7fa;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.head{max-width:1500px;margin:auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center}.brand{display:flex;gap:12px;align-items:center}.logo{width:44px;height:44px;border-radius:10px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800}.brand h1{margin:0;color:var(--navy);font-size:21px}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.ready{padding:7px 10px;border-radius:20px;background:var(--greenp);color:var(--green);font-size:12px;font-weight:700}
+nav{background:var(--navy)}.nav{max-width:1500px;margin:auto;display:flex;overflow:auto}.nav button{border:0;background:0;color:#dce9f2;padding:13px 19px;font-weight:700;cursor:pointer;white-space:nowrap}.nav button.active,.nav button:hover{background:#ffffff1c;color:#fff}
+main{max-width:1500px;margin:auto;padding:24px}.page{display:none}.page.active{display:block}.hero,.card{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 16px #12304a12}.hero{border-left:5px solid var(--blue);padding:21px;margin-bottom:18px}.hero h2{margin:0 0 6px;color:var(--navy)}.hero p,.card p{color:var(--muted);line-height:1.5;font-size:13px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:17px}.card{padding:19px}.s12{grid-column:span 12}.s8{grid-column:span 8}.s6{grid-column:span 6}.s4{grid-column:span 4}.s3{grid-column:span 3}.card h3{margin:0 0 9px;color:var(--navy)}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.q{background:#fff;border:1px solid var(--line);border-radius:9px;padding:14px;cursor:pointer}.q:hover{border-color:var(--blue);box-shadow:0 4px 12px #12304a12}.q b{display:block;color:var(--navy);margin-bottom:4px}.q span{font-size:11px;color:var(--muted)}
+.search{display:grid;grid-template-columns:1fr 190px 170px auto;gap:8px;margin:12px 0}input,select,textarea{width:100%;padding:11px 12px;border:1px solid #cbd6df;border-radius:8px;background:#fff;font:inherit;font-size:14px}button.primary{border:0;border-radius:8px;background:var(--blue);color:#fff;padding:11px 17px;font-weight:700;cursor:pointer}button.secondary{border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--navy);padding:9px 12px;font-weight:700;cursor:pointer}
+.notice{background:var(--amberp);border:1px solid #efd69d;color:#704900;border-radius:9px;padding:12px 14px;font-size:13px;margin:12px 0}.results{display:grid;gap:9px}.result{border:1px solid var(--line);border-radius:10px;padding:14px}.top{display:flex;justify-content:space-between;gap:10px}.term{font-weight:800;color:var(--navy)}.id{font:700 12px monospace;background:var(--pale);color:var(--blue);padding:6px 8px;border-radius:6px}.badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.badge{font-size:10px;font-weight:700;padding:5px 7px;border-radius:5px}.b1{background:var(--pale);color:var(--blue)}.b2{background:var(--greenp);color:var(--green)}.b3{background:var(--purpp);color:var(--purple)}.small{font-size:11px;color:var(--muted)}.actions{margin-top:9px;display:flex;gap:7px}
+.libgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.lib{border:1px solid var(--line);border-radius:9px;padding:13px;cursor:pointer}.lib:hover{border-color:var(--blue)}.lib b{display:block;color:var(--navy);font-size:13px}.lib span{font-size:11px;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.stat{background:#f9fbfd;border:1px solid var(--line);border-radius:9px;padding:13px}.stat strong{display:block;color:var(--navy);font-size:23px}.stat span{font-size:11px;color:var(--muted)}
+.modal{display:none;position:fixed;inset:0;background:#0b223a88;z-index:20;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalbox{background:#fff;max-width:720px;width:100%;max-height:90vh;overflow:auto;border-radius:14px;padding:22px}.close{float:right;border:0;padding:7px;border-radius:6px}.detail{display:grid;grid-template-columns:150px 1fr;gap:10px;border-top:1px solid var(--line);padding:10px;font-size:13px}
+footer{max-width:1500px;margin:auto;text-align:center;padding:20px;color:var(--muted);font-size:11px}
+@media(max-width:950px){.grid{grid-template-columns:1fr}.s12,.s8,.s6,.s4,.s3{grid-column:span 1}.quick,.stats,.libgrid{grid-template-columns:1fr 1fr}.search{grid-template-columns:1fr 1fr}}@media(max-width:600px){.quick,.stats,.libgrid,.search{grid-template-columns:1fr}.head{padding:12px 15px}}
+
+.demo-banner{max-width:1500px;margin:14px auto 0;padding:12px 18px;display:flex;align-items:flex-start;gap:12px;background:#fff7e6;border:1px solid #e8c77e;border-left:5px solid #b56b00;border-radius:10px;color:#5f4100;box-shadow:0 3px 12px rgba(18,48,74,.08)}
+.demo-banner-icon{font-size:21px;line-height:1}
+.demo-banner-content strong{display:block;font-size:12px;letter-spacing:.2px}
+.demo-banner-content span{display:block;margin-top:4px;font-size:11px;line-height:1.5;color:#735a2b}
+.demo-safety{border-left:5px solid #b56b00!important;background:#fffaf0!important}
+.demo-safety h3{color:#704900!important}
+@media(max-width:600px){.demo-banner{margin:10px 10px 0;padding:11px 13px}.demo-banner-content strong{font-size:11px}}
+
+</style>
+</head>
+<body>
+<header>
+<div class="head"><div class="brand"><div class="logo">SC</div><div><h1>SCCA</h1><p>Clinical Coding & Terminology Assistant</p></div></div><span class="ready">● System Ready · 2.3</span></div>
+<nav><div class="nav"><button class="active" onclick="page('clinician',this)">Clinician</button><button onclick="page('admin',this)">Admin / Coding</button><button onclick="page('library',this)">SNOMED & Terminology</button><button onclick="page('dashboard',this)">Dashboard</button></div></nav>
+</header>
+
+<div class="demo-banner" role="alert">
+  <div class="demo-banner-icon">⚠</div>
+  <div class="demo-banner-content">
+    <strong>DEMONSTRATION PROJECT ONLY · NO PATIENT DATA HELD · NOT FOR CLINICAL USE</strong>
+    <span>SCCA is a standalone portfolio demonstration. No patient data is collected, stored, processed or transmitted. This application has no connection to SystmOne or any other live clinical system. All example information is fictional/demo data.</span>
+  </div>
+</div>
+
+<main>
+
+<section id="clinician" class="page active">
+<div class="hero"><h2>Clinical Coding Assistant</h2><p>Fast, clinician-friendly terminology lookup for diagnoses, symptoms, findings and common primary-care concepts.</p></div>
+<div class="quick">
+<div class="q" onclick="focusSearch()"><b>🔎 Find a Clinical Term</b><span>Search the expanded library</span></div>
+<div class="q" onclick="cat('')"><b>⭐ Primary Care Favourites</b><span>Commonly encountered concepts</span></div>
+<div class="q" onclick="cat('Cardiovascular')"><b>🫀 Cardiovascular</b><span>Heart and blood-pressure terms</span></div>
+<div class="q" onclick="cat('Respiratory')"><b>🫁 Respiratory</b><span>Asthma, COPD and symptoms</span></div>
+</div>
+<div class="grid" style="margin-top:18px"><div class="card s8"><h3>Clinical terminology search</h3><div class="search" style="grid-template-columns:1fr auto"><input id="csearch" placeholder="Try hypertension, high blood pressure, asthma..." oninput="searchClinical()"><button class="primary" onclick="searchClinical()">Search</button></div><div id="cresults" class="results"></div></div>
+<div class="card s4"><h3>Clinical use</h3><p>Search using everyday clinical wording, synonyms or a SNOMED CT concept identifier.</p><div class="notice"><b>Decision support only.</b> Confirm the concept and follow local clinical coding policy before recording.</div><button class="secondary" onclick="openNHS()">Open NHS SNOMED CT Browser ↗</button></div></div>
+</section>
+
+<section id="admin" class="page">
+<div class="hero"><h2>Admin & Coding Pathway</h2><p>Support for administrative teams reviewing scanned letters, discharge summaries, referrals and other clinical correspondence.</p></div>
+<div class="notice"><b>Workflow:</b> review correspondence → identify terminology → review concept → record appropriately under local practice policy.</div>
+<div class="grid"><div class="card s8"><h3>📄 Correspondence terminology assistant</h3><p>Paste relevant wording from a scanned letter or report to identify possible terminology matches.</p><textarea id="letter" rows="8" placeholder="Example: Patient has a history of hypertension and type 2 diabetes. Recent review notes shortness of breath..."></textarea><br><br><button class="primary" onclick="analyse()">Analyse terminology</button><div id="ares" class="results" style="margin-top:14px"></div></div>
+<div class="card s4"><h3>Admin workflow</h3><p>1. Confirm patient and document context.</p><p>2. Identify clinical wording.</p><p>3. Review terminology and concept type.</p><p>4. Follow local SystmOne/coding workflow.</p></div>
+<div class="card s12"><h3>Common coding searches</h3><div class="quick" id="adminQuick"></div></div></div>
+</section>
+
+<section id="library" class="page">
+<div class="hero"><h2>SNOMED CT & Medical Terminology Library</h2><p>Expanded primary-care demonstration library — searchable by term, synonym, SNOMED CT ID, category and concept type.</p></div>
+<div class="card"><div class="stats"><div class="stat"><strong id="n">0</strong><span>Demo concepts</span></div><div class="stat"><strong id="nc">0</strong><span>Clinical categories</span></div><div class="stat"><strong>SNOMED CT</strong><span>Terminology model</span></div><div class="stat"><strong>UK</strong><span>Primary-care focus</span></div></div>
+<div class="search"><input id="lsearch" placeholder="Search term, synonym, SNOMED ID or description..." oninput="render()"><select id="cf" onchange="render()"><option value="">All categories</option></select><select id="tf" onchange="render()"><option value="">All concept types</option></select><button class="primary" onclick="clearAll()">Clear</button></div><div id="lres" class="results"></div></div>
+<div class="card" style="margin-top:17px"><h3>Browse by clinical domain</h3><div id="cats" class="libgrid"></div></div>
+<div class="card" style="margin-top:17px"><h3>Terminology governance</h3><p>This embedded library is a showcase dataset, not a complete authoritative SNOMED CT release. Production implementation should validate against current NHS England terminology resources and release/version controls.</p><button class="secondary" onclick="openNHS()">Open NHS SNOMED CT Browser ↗</button></div>
+</section>
+
+<section id="dashboard" class="page">
+<div class="hero"><h2>SCCA 2.3 Dashboard</h2><p>Showcase overview of the application and terminology library.</p></div>
+<div class="grid"><div class="card s3"><h3 id="dn">0</h3><p>Demonstration concepts</p></div><div class="card s3"><h3 id="dcat">0</h3><p>Clinical categories</p></div><div class="card s3"><h3>3</h3><p>User pathways</p></div><div class="card s3"><h3>2.3</h3><p>Application version</p></div>
+
+<div class="card s12 demo-safety">
+  <h3>⚠ Demonstration & Data Safety Notice</h3>
+  <p><strong>SCCA 2.3 is a demonstration and portfolio project only.</strong> It does not collect, store, process or transmit patient data and does not connect to SystmOne, NHS Spine, HSCN or any other live clinical system.</p>
+  <p>All terminology examples and correspondence examples are fictional/demo content. The application must not be used for real patient care, clinical decision-making or production coding.</p>
+  <p>A production implementation would require appropriate clinical safety, information governance, cybersecurity, terminology release management, testing and local organisational approval.</p>
+</div>
+
+<div class="card s12"><h3>Feature set</h3><div class="quick"><div class="q"><b>Clinical Search</b><span>Fast terminology lookup</span></div><div class="q"><b>Admin Coding</b><span>Correspondence support</span></div><div class="q"><b>SNOMED Library</b><span>Search by term, synonym or ID</span></div><div class="q"><b>Concept Detail</b><span>Structured concept view</span></div></div></div></div>
+</section>
+</main>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="modalbox"><button class="close" onclick="closeModal()">✕</button><div id="modalbody"></div></div></div>
+<footer>SCCA 2.3 · Clinical Coding & Terminology Assistant · <strong>DEMONSTRATION PROJECT ONLY</strong> · No patient data is held, collected, stored, processed or transmitted · No live clinical-system connection · Not intended for clinical use or patient care · Verify against current authoritative terminology resources.</footer>
+
+<script>
+const raw=[
+["Hypertension","38341003","Cardiovascular","Clinical finding","High blood pressure","Hypertensive disorder"],
+["Essential hypertension","59621000","Cardiovascular","Clinical finding","Primary hypertension","Essential high blood pressure"],
+["Atrial fibrillation","49436004","Cardiovascular","Clinical finding","AF","Irregular atrial rhythm"],
+["Heart failure","84114007","Cardiovascular","Clinical finding","Cardiac failure","Heart failure disorder"],
+["Ischaemic heart disease","414545008","Cardiovascular","Clinical finding","IHD","Ischaemic heart disease"],
+["Angina pectoris","194828000","Cardiovascular","Clinical finding","Angina","Chest pain due to myocardial ischaemia"],
+["Myocardial infarction","22298006","Cardiovascular","Clinical finding","Heart attack","Myocardial infarction"],
+["Hyperlipidaemia","267432004","Cardiovascular","Clinical finding","High cholesterol","Lipid disorder"],
+["Peripheral vascular disease","400047006","Cardiovascular","Clinical finding","PVD","Peripheral vascular disease"],
+["Heart murmur","88610006","Cardiovascular","Finding","Cardiac murmur","Abnormal cardiac auscultation finding"],
+["Asthma","195967001","Respiratory","Clinical finding","Asthmatic disorder","Asthma"],
+["Chronic obstructive pulmonary disease","13645005","Respiratory","Clinical finding","COPD","Chronic obstructive pulmonary disease"],
+["Cough","49727002","Respiratory","Symptom","Coughing","Cough"],
+["Dyspnoea","267036007","Respiratory","Symptom","Shortness of breath; breathlessness","Difficulty breathing"],
+["Wheeze","56018004","Respiratory","Symptom","Wheezing","Wheezing respiration"],
+["Acute bronchitis","10509002","Respiratory","Clinical finding","Bronchitis","Acute bronchitis"],
+["Pneumonia","233604007","Respiratory","Clinical finding","Chest infection","Pneumonia"],
+["Allergic rhinitis","61582004","Respiratory","Clinical finding","Hay fever","Allergic rhinitis"],
+["Obstructive sleep apnoea","73430006","Respiratory","Clinical finding","OSA; sleep apnoea","Obstructive sleep apnoea"],
+["Type 2 diabetes mellitus","44054006","Diabetes & Endocrine","Clinical finding","Type 2 diabetes; T2DM","Type 2 diabetes mellitus"],
+["Type 1 diabetes mellitus","46635009","Diabetes & Endocrine","Clinical finding","Type 1 diabetes; T1DM","Type 1 diabetes mellitus"],
+["Prediabetes","15777000","Diabetes & Endocrine","Clinical finding","Impaired glucose regulation","Prediabetes"],
+["Hypothyroidism","40930008","Diabetes & Endocrine","Clinical finding","Underactive thyroid","Hypothyroidism"],
+["Hyperthyroidism","34486009","Diabetes & Endocrine","Clinical finding","Overactive thyroid","Hyperthyroidism"],
+["Obesity","414916001","Diabetes & Endocrine","Clinical finding","Obese","Obesity"],
+["Vitamin D deficiency","34713006","Diabetes & Endocrine","Clinical finding","Low vitamin D","Vitamin D deficiency"],
+["Hyperglycaemia","80394007","Diabetes & Endocrine","Finding","High blood glucose","Elevated blood glucose"],
+["Hypoglycaemia","302870006","Diabetes & Endocrine","Finding","Low blood sugar","Low blood glucose"],
+["Depressive disorder","35489007","Mental Health","Clinical finding","Depression","Depressive disorder"],
+["Generalised anxiety disorder","21897009","Mental Health","Clinical finding","GAD; anxiety","Generalised anxiety disorder"],
+["Panic disorder","371631005","Mental Health","Clinical finding","Panic attacks","Panic disorder"],
+["Post-traumatic stress disorder","47505003","Mental Health","Clinical finding","PTSD","Post-traumatic stress disorder"],
+["Insomnia","193462001","Mental Health","Clinical finding","Sleep difficulty","Insomnia"],
+["Stress","73595000","Mental Health","Finding","Psychological stress","Stress-related finding"],
+["Migraine","37796009","Neurology","Clinical finding","Migraine headache","Migraine"],
+["Epilepsy","84757009","Neurology","Clinical finding","Seizure disorder","Epilepsy"],
+["Parkinson's disease","49049000","Neurology","Clinical finding","Parkinsonism","Parkinson's disease"],
+["Stroke","230690007","Neurology","Clinical finding","CVA; cerebrovascular accident","Stroke"],
+["Transient ischaemic attack","266257000","Neurology","Clinical finding","TIA; mini stroke","Transient cerebral ischaemic attack"],
+["Peripheral neuropathy","42658009","Neurology","Clinical finding","Neuropathy","Peripheral nerve disorder"],
+["Dizziness","404640003","Neurology","Symptom","Light headedness","Dizziness"],
+["Headache","25064002","Neurology","Symptom","Head pain","Headache"],
+["Syncope","271594007","Neurology","Symptom","Fainting","Transient loss of consciousness"],
+["Osteoarthritis","239862000","Musculoskeletal","Clinical finding","OA; degenerative joint disease","Osteoarthritis"],
+["Rheumatoid arthritis","69896004","Musculoskeletal","Clinical finding","RA","Rheumatoid arthritis"],
+["Low back pain","279039007","Musculoskeletal","Symptom","Back pain","Low back pain"],
+["Neck pain","81680005","Musculoskeletal","Symptom","Cervical pain","Neck pain"],
+["Shoulder pain","45326000","Musculoskeletal","Symptom","Painful shoulder","Shoulder pain"],
+["Knee pain","30989003","Musculoskeletal","Symptom","Pain in knee","Knee pain"],
+["Hip pain","267954009","Musculoskeletal","Symptom","Pain in hip","Hip pain"],
+["Osteoporosis","64859006","Musculoskeletal","Clinical finding","Bone thinning","Osteoporosis"],
+["Fracture","72704001","Musculoskeletal","Clinical finding","Broken bone","Fracture"],
+["Gastro-oesophageal reflux disease","235595009","Gastrointestinal","Clinical finding","GORD; reflux","Gastro-oesophageal reflux disease"],
+["Irritable bowel syndrome","10743008","Gastrointestinal","Clinical finding","IBS","Irritable bowel syndrome"],
+["Crohn's disease","34000006","Gastrointestinal","Clinical finding","Crohn disease","Inflammatory bowel disease"],
+["Ulcerative colitis","64766004","Gastrointestinal","Clinical finding","UC","Ulcerative colitis"],
+["Constipation","14760008","Gastrointestinal","Clinical finding","Constipated","Constipation"],
+["Diarrhoea","62315008","Gastrointestinal","Symptom","Loose stools","Diarrhoea"],
+["Nausea","422587007","Gastrointestinal","Symptom","Feeling sick","Nausea"],
+["Vomiting","249497008","Gastrointestinal","Symptom","Being sick","Vomiting"],
+["Abdominal pain","21522001","Gastrointestinal","Symptom","Stomach pain","Abdominal pain"],
+["Menopause","161712005","Women's Health","Clinical finding","Menopausal state","Menopause"],
+["Hot flushes","198436008","Women's Health","Symptom","Hot flashes","Vasomotor flushing"],
+["Heavy menstrual bleeding","38965004","Women's Health","Clinical finding","Heavy periods","Heavy menstrual bleeding"],
+["Dysmenorrhoea","266599000","Women's Health","Symptom","Period pain","Painful menstruation"],
+["Polycystic ovarian syndrome","237055002","Women's Health","Clinical finding","PCOS","Polycystic ovarian syndrome"],
+["Endometriosis","129103003","Women's Health","Clinical finding","Endometriosis","Endometriosis"],
+["Pregnancy","77386006","Women's Health","Clinical finding","Pregnant","Pregnancy"],
+["Contraception","86553008","Women's Health","Procedure","Birth control","Contraception"],
+["Benign prostatic hyperplasia","266569009","Men's Health","Clinical finding","BPH; enlarged prostate","Benign prostatic hyperplasia"],
+["Erectile dysfunction","397803000","Men's Health","Clinical finding","ED","Erectile dysfunction"],
+["Prostatitis","9713002","Men's Health","Clinical finding","Inflamed prostate","Prostatitis"],
+["Lower urinary tract symptoms","249607009","Men's Health","Finding","LUTS","Lower urinary tract symptoms"],
+["Chronic kidney disease","709044004","Renal & Urology","Clinical finding","CKD","Chronic kidney disease"],
+["Urinary tract infection","68566005","Renal & Urology","Clinical finding","UTI; water infection","Urinary tract infection"],
+["Urinary incontinence","165232002","Renal & Urology","Clinical finding","Bladder leakage","Urinary incontinence"],
+["Haematuria","34436003","Renal & Urology","Finding","Blood in urine","Haematuria"],
+["Renal stone","95570007","Renal & Urology","Clinical finding","Kidney stone","Renal calculus"],
+["Dysuria","49650001","Renal & Urology","Symptom","Pain passing urine","Painful urination"],
+["Atopic eczema","24079001","Dermatology","Clinical finding","Eczema; atopic dermatitis","Atopic eczema"],
+["Psoriasis","9014002","Dermatology","Clinical finding","Psoriatic disorder","Psoriasis"],
+["Acne vulgaris","424010006","Dermatology","Clinical finding","Acne","Acne vulgaris"],
+["Cellulitis","128045006","Dermatology","Clinical finding","Skin infection","Cellulitis"],
+["Urticaria","126485001","Dermatology","Clinical finding","Hives","Urticaria"],
+["Skin lesion","95324001","Dermatology","Finding","Lesion of skin","Skin lesion"],
+["COVID-19","186747009","Infectious Disease","Clinical finding","Coronavirus infection","COVID-19"],
+["Influenza","6142004","Infectious Disease","Clinical finding","Flu","Influenza"],
+["Acute sinusitis","75498004","Infectious Disease","Clinical finding","Sinus infection","Acute sinusitis"],
+["Tonsillitis","17741008","Infectious Disease","Clinical finding","Tonsil infection","Tonsillitis"],
+["Gastroenteritis","186156007","Infectious Disease","Clinical finding","Gastro bug","Gastroenteritis"],
+["Herpes zoster","4740000","Infectious Disease","Clinical finding","Shingles","Herpes zoster"],
+["Conjunctivitis","9826008","Ophthalmology","Clinical finding","Pink eye","Conjunctivitis"],
+["Cataract","1932002","Ophthalmology","Clinical finding","Cataract","Cataract"],
+["Glaucoma","77432004","Ophthalmology","Clinical finding","Glaucomatous disorder","Glaucoma"],
+["Visual disturbance","246720002","Ophthalmology","Symptom","Vision problem","Visual disturbance"],
+["Otitis media","3110003","ENT","Clinical finding","Middle ear infection","Otitis media"],
+["Hearing loss","13957004","ENT","Finding","Reduced hearing","Hearing loss"],
+["Tinnitus","60862001","ENT","Symptom","Ringing in ears","Tinnitus"],
+["Sore throat","162397003","ENT","Symptom","Throat pain","Sore throat"],
+["Dental caries","80967001","Oral Health","Clinical finding","Tooth decay","Dental caries"],
+["Gingivitis","30168009","Oral Health","Clinical finding","Inflamed gums","Gingivitis"],
+["Fever","386661006","Symptoms & Findings","Symptom","Pyrexia; high temperature","Fever"],
+["Fatigue","271795006","Symptoms & Findings","Symptom","Tiredness","Fatigue"],
+["Chest pain","29857009","Symptoms & Findings","Symptom","Chest discomfort","Chest pain"],
+["Palpitations","80313002","Symptoms & Findings","Symptom","Awareness of heartbeat","Palpitations"],
+["Abnormal weight loss","267024001","Symptoms & Findings","Symptom","Unintentional weight loss","Abnormal weight loss"],
+["Fall","129839007","Symptoms & Findings","Event","Accidental fall","Fall event"],
+["Pain","279039007","Symptoms & Findings","Symptom","Pain","Pain finding"],
+["Pruritus","418290006","Symptoms & Findings","Symptom","Itching","Pruritus"],
+["Blood pressure measurement","271649006","Investigations & Results","Observable entity","BP; blood pressure","Blood pressure measurement"],
+["Haemoglobin A1c","43396009","Investigations & Results","Observable entity","HbA1c","Glycated haemoglobin measurement"],
+["Full blood count","26604007","Investigations & Results","Procedure","FBC; blood count","Full blood count"],
+["Renal function test","26958001","Investigations & Results","Procedure","Kidney function blood test","Renal function investigation"],
+["Liver function test","166312009","Investigations & Results","Procedure","LFT","Liver function test"],
+["Electrocardiogram","29303009","Investigations & Results","Procedure","ECG","Electrocardiographic examination"],
+["Urinalysis","27171005","Investigations & Results","Procedure","Urine test","Urinalysis"],
+["Spirometry","127783003","Investigations & Results","Procedure","Lung function test","Spirometry"],
+["Clinical assessment","386053000","Procedures","Procedure","Clinical review","Clinical assessment"],
+["Medication review","182836005","Procedures","Procedure","Medicines review","Medication review"],
+["Blood test","396550006","Procedures","Procedure","Blood sampling","Blood test"],
+["Referral to specialist","306206005","Procedures","Procedure","Specialist referral","Referral"],
+["Health education","409073007","Procedures","Procedure","Patient education","Health education"],
+["Care plan","734163000","Procedures","Procedure","Care planning","Care plan"],
+["Smoking status","266919005","Preventive Care","Finding","Smoking history","Smoking status"],
+["Smoking cessation","710110006","Preventive Care","Procedure","Stop smoking support","Smoking cessation"],
+["Alcohol consumption","228281005","Preventive Care","Finding","Alcohol use","Alcohol consumption"],
+["Immunisation","33879002","Preventive Care","Procedure","Vaccination","Immunisation"],
+["Health screening","268547008","Preventive Care","Procedure","Screening","Health screening"],
+["Body mass index","60621009","Preventive Care","Observable entity","BMI","Body mass index"],
+["Primary care consultation","185317003","Consultations & Encounters","Encounter","GP consultation","Primary care consultation"],
+["Telephone consultation","185316007","Consultations & Encounters","Encounter","Telephone appointment","Telephone consultation"],
+["Follow-up encounter","390906007","Consultations & Encounters","Encounter","Follow up","Follow-up encounter"],
+["Clinical correspondence","371537001","Administrative / Correspondence","Record artifact","Clinical letter","Clinical correspondence"],
+["Discharge summary","371537001","Administrative / Correspondence","Record artifact","Hospital discharge letter","Discharge summary"],
+["Referral letter","371530004","Administrative / Correspondence","Record artifact","Referral correspondence","Referral letter"],
+["Investigation report","371534008","Administrative / Correspondence","Record artifact","Test report","Investigation report"],
+["Paracetamol","387517004","Medicines","Medication","Acetaminophen","Paracetamol"],
+["Ibuprofen","387207008","Medicines","Medication","NSAID painkiller","Ibuprofen"],
+["Amlodipine","386864001","Medicines","Medication","Calcium-channel blocker","Amlodipine"],
+["Ramipril","386872004","Medicines","Medication","ACE inhibitor","Ramipril"],
+["Atorvastatin","372913009","Medicines","Medication","Statin","Atorvastatin"],
+["Metformin","109081006","Medicines","Medication","Biguanide","Metformin"],
+["Salbutamol","372897005","Medicines","Medication","Reliever inhaler","Salbutamol"],
+["Beclometasone","372725003","Medicines","Medication","Inhaled corticosteroid","Beclometasone"]
+].map(x=>({term:x[0],id:x[1],cat:x[2],type:x[3],syn:x[4],desc:x[5]}));
+
+const cats=[...new Set(raw.map(x=>x.cat))].sort(),types=[...new Set(raw.map(x=>x.type))].sort();
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+function page(id,b){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(id==='library')render()}
+function openNHS(){window.open('https://termbrowser.nhs.uk/','_blank','noopener')}
+function focusSearch(){page('clinician',document.querySelectorAll('.nav button')[0]);document.getElementById('csearch').focus()}
+function cat(c){page('library',document.querySelectorAll('.nav button')[2]);document.getElementById('cf').value=c;document.getElementById('lsearch').value='';render()}
+function card(x){return `<div class="result"><div class="top"><div><div class="term">${esc(x.term)}</div><div class="small">${esc(x.syn)}</div></div><span class="id">${esc(x.id)}</span></div><div class="badges"><span class="badge b1">${esc(x.cat)}</span><span class="badge b2">${esc(x.type)}</span><span class="badge b3">SNOMED CT</span></div><div class="small">${esc(x.desc)}</div><div class="actions"><button class="secondary" onclick="detail('${raw.indexOf(x)}')">View concept</button><button class="secondary" onclick="copyid('${esc(x.id)}')">Copy ID</button></div></div>`}
+function matches(q,x){return (x.term+' '+x.id+' '+x.syn+' '+x.desc+' '+x.cat+' '+x.type).toLowerCase().includes(q)}
+function searchClinical(){let q=document.getElementById('csearch').value.toLowerCase().trim();document.getElementById('cresults').innerHTML=q?raw.filter(x=>matches(q,x)).slice(0,40).map(card).join(''):'<div class="small">Start typing to search the expanded terminology library.</div>'}
+function render(){let q=document.getElementById('lsearch').value.toLowerCase().trim(),c=document.getElementById('cf').value,t=document.getElementById('tf').value,r=raw.filter(x=>(!q||matches(q,x))&&(!c||x.cat===c)&&(!t||x.type===t));document.getElementById('lres').innerHTML=r.length?r.slice(0,100).map(card).join(''):'<div class="result"><b>No matching concepts.</b><div class="small">Try a broader search or clear a filter.</div></div>'}
+function clearAll(){document.getElementById('lsearch').value='';document.getElementById('cf').value='';document.getElementById('tf').value='';render()}
+function detail(i){let x=raw[i];document.getElementById('modalbody').innerHTML=`<h2 style="color:var(--navy);margin:0 0 5px">${esc(x.term)}</h2><p class="small">SCCA 2.3 demonstration concept</p><div class="id" style="display:inline-block;font-size:16px">${esc(x.id)}</div><div class="detail"><b>Preferred term</b><span>${esc(x.term)}</span></div><div class="detail"><b>Synonyms</b><span>${esc(x.syn)}</span></div><div class="detail"><b>Category</b><span>${esc(x.cat)}</span></div><div class="detail"><b>Concept type</b><span>${esc(x.type)}</span></div><div class="detail"><b>Description</b><span>${esc(x.desc)}</span></div><div class="notice"><b>Review before use:</b> confirm the current concept, status and local coding guidance against authoritative terminology.</div><button class="primary" onclick="copyid('${esc(x.id)}')">Copy SNOMED CT ID</button>`;document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function copyid(id){navigator.clipboard&&navigator.clipboard.writeText(id);alert('SNOMED CT ID copied: '+id)}
+function analyse(){let q=document.getElementById('letter').value.toLowerCase(),r=raw.filter(x=>q.includes(x.term.toLowerCase())||q.includes(x.syn.split(';')[0].toLowerCase())).slice(0,30);document.getElementById('ares').innerHTML=r.length?r.map(card).join(''):'<div class="result"><b>No direct terminology matches identified.</b><div class="small">Search the terminology library manually using the key clinical wording.</div></div>'}
+function init(){document.getElementById('n').textContent=raw.length;document.getElementById('nc').textContent=cats.length;document.getElementById('dn').textContent=raw.length;document.getElementById('dcat').textContent=cats.length;cats.forEach(c=>document.getElementById('cf').insertAdjacentHTML('beforeend',`<option>${esc(c)}</option>`));types.forEach(t=>document.getElementById('tf').insertAdjacentHTML('beforeend',`<option>${esc(t)}</option>`));document.getElementById('cats').innerHTML=cats.map(c=>`<div class="lib" onclick="cat('${esc(c).replaceAll("'","\\'")}')"><b>${esc(c)}</b><span>${raw.filter(x=>x.cat===c).length} concepts</span></div>`).join('');document.getElementById('adminQuick').innerHTML=['hypertension','diabetes','asthma','COPD','atrial fibrillation','depression','chronic kidney disease','osteoarthritis'].map(q=>`<div class="q" onclick="adminSearch('${q}')"><b>${q}</b><span>Search terminology</span></div>`).join('');render()}
+function adminSearch(q){page('library',document.querySelectorAll('.nav button')[2]);document.getElementById('lsearch').value=q;document.getElementById('cf').value='';document.getElementById('tf').value='';render()}
+init();
+</script>
+</body>
+</html>
